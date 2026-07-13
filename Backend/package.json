@@ -1,0 +1,32 @@
+{
+  "name": "gen_ai_shreyians",
+  "version": "1.0.0",
+  "description": "gen_ai-project",
+  "script": "npm run d",
+  "homepage": "https://github.com/Priyo29/Gen_ai_project#readme",
+  "bugs": {
+    "url": "https://github.com/Priyo29/Gen_ai_project/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Priyo29/Gen_ai_project.git"
+  },
+  "license": "ISC",
+  "author": "Priyabrata",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "js": "^0.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.1"
+  }
+}
