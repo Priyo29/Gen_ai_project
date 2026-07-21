@@ -12,8 +12,15 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        await handleLogin({ email, password })
-        navigate("/")
+        try {
+            await handleLogin({ email, password });
+            navigate("/"); // Only runs if handleLogin succeeds!
+        } catch (err) {
+            console.error("Failed to log in:", err);
+            // Stays on Login page if there is an error
+        }
+        //     await handleLogin({ email, password })
+        //     navigate("/")
     }
 
     if (loading) {
@@ -30,7 +37,7 @@ const Login = () => {
 
                     <div className="input-group">
                         <label htmlFor="email">Email</label>
-                        <input 
+                        <input
                             onChange={(e) => { setEmail(e.target.value) }}
                             type="email" id="email" name="email" placeholder="Enter email address" />
                     </div>

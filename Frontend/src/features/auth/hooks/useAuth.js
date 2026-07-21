@@ -7,9 +7,9 @@ export const useAuth = () => {
     const context = useContext(AuthContext)
     const { user, setUser, loading, setLoading } = context
 
-    // if (!context) {
-    //     throw new Error("useAuth must be used within an AuthProvide wrapper");
-    // }
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
 
     const handleLogin = async ({ email, password }) => {
         setLoading(true)
@@ -24,7 +24,7 @@ export const useAuth = () => {
 
     }
 
-    const handleRegister = async ({username, email, password }) => {
+    const handleRegister = async ({ username, email, password }) => {
         setLoading(true)
         try {
             const data = await register({ username, email, password })
