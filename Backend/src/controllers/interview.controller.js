@@ -4,29 +4,56 @@ const interviewReportModel = require("../models/interviewReport.model")
 
 
 async function generateInterViewReportController(req, res) {
+    console.log("Files:", req.file);
+    console.log("Body:", req.body);
+
+    if (!req.file) {
+        return res.status(400).json({ 
+            message: "Resume file is required. Multer did not find a file with the exact key 'resume'.",
+            receivedBodyKeys: req.body ? Object.keys(req.body) : "req.body is undefined (Not a multipart request!)"
+        });
+    }
 
     const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText()
     const { selfDescription, jobDescription } = req.body
 
-    const interViewReportByAi = await generateInterviewReport({
-        resume: resumeContent.text,
-        selfDescription,
-        jobDescription
-    })
+    try {
+        const interViewReportByAi = await generateInterviewReport({
+            resume: resumeContent.text,
+            selfDescription,
+            jobDescription
+        })
 
-    const interviewReport = await interviewReportModel.create({
-        user: req.user.id,
-        resume: resumeContent.text,
-        selfDescription,
-        jobDescription,
-        ...interViewReportByAi
-    })
+        const interviewReport = await interviewReportModel.create({
+            user: req.user.id,
+            resume: resumeContent.text,
+            selfDescription,
+            jobDescription,
+            ...interViewReportByAi,
+            title: interViewReportByAi.title || "Job Interview"
+        })
 
-    res.status(201).json({
-        message: "Interview report generated successfully.",
-        interviewReport
-    })
+        res.status(201).json({
+            message: "Interview report generated successfully.",
+            interviewReport
+        })
+    } catch (error) {
+        console.error("AI Generation Error:", error);
+        
+        // Handle Gemini 503 Overloaded error
+        if (error.message && error.message.includes("503")) {
+            return res.status(503).json({
+                message: "The AI model is currently experiencing high demand and is overloaded. Please try again in a few minutes.",
+                error: error.message
+            });
+        }
 
+        // Generic error handler
+        res.status(500).json({
+            message: "An error occurred while generating the interview report.",
+            error: error.message || "Unknown error"
+        });
+    }
 }
 
 async function getInterviewReportByIdController(req, res) {
